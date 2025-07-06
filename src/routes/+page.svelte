@@ -1,77 +1,71 @@
 <script lang="ts">
-	// En el futuro, aquí puedes cargar datos dinámicos si lo necesitas.
+  // En el futuro, aquí podemos cargar datos dinámicos si los necesitas.
+  // Por ejemplo, la lista de clases podría venir de Supabase.
+
+  // Datos de ejemplo para nuestras clases.
+  const classes = [
+    {
+      name: 'Jiu-Jitsu Brasileño',
+      description: 'El arte suave. Domina técnicas de control y sumisión en el suelo. Ideal para la defensa personal.',
+      img: 'https://via.placeholder.com/400x300?text=Jiu-Jitsu' // Reemplaza con una imagen real
+    },
+    {
+      name: 'Muay Thai',
+      description: 'Conocido como el arte de las ocho extremidades. Un striking contundente que mejora tu condición física.',
+      img: 'https://via.placeholder.com/400x300?text=Muay+Thai' // Reemplaza con una imagen real
+    },
+    {
+      name: 'Boxeo',
+      description: 'Disciplina y agilidad. Aprende el juego de pies, la defensa y los golpes precisos de este deporte olímpico.',
+      img: 'https://via.placeholder.com/400x300?text=Boxeo' // Reemplaza con una imagen real
+    }
+  ];
 </script>
 
-<div class="bg-white text-stone-800">
-	<header class="py-20 md:py-32 bg-stone-50">
-		<div class="container mx-auto px-6 text-center">
-			<h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight">
-				Transforma tu Negocio con Nuestro Sistema a Medida
-			</h1>
-			<p class="mt-6 max-w-2xl mx-auto text-lg text-stone-600">
-				La solución web que necesitas para optimizar tus procesos, gestionar tus clientes y hacer crecer tus ingresos. Simple, potente y diseñado para ti.
-			</p>
-			<div class="mt-10">
-				<a href="/login" class="bg-slate-800 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-slate-700 transition-transform duration-300 inline-block transform hover:scale-105">
-					Empezar Ahora →
-				</a>
-			</div>
-		</div>
-	</header>
+<section class="flex flex-col items-center justify-center bg-badger-dark text-center text-badger-light py-20">
+  <img src="/logo-badgers.png" alt="Logo de The Badgers" class="w-32 h-32 mb-4" />
+  <h1 class="text-5xl font-extrabold mb-4">
+    Forja tu Carácter en <span class="text-badger-accent">The Badgers</span>
+  </h1>
+  <p class="max-w-2xl mb-8 text-lg text-gray-300">
+    Más que una academia, una comunidad. Descubre la disciplina, el respeto y la fuerza a través de las artes marciales.
+  </p>
+  <div>
+    <a href="/clases" class="bg-badger-accent text-badger-dark font-bold py-3 px-6 rounded-lg hover:opacity-90 transition-opacity">
+      Ver Clases y Horarios
+    </a>
+  </div>
+</section>
 
-	<main>
-		<section id="features" class="py-20">
-			<div class="container mx-auto px-6">
-				<div class="text-center mb-16">
-					<h2 class="text-3xl md:text-4xl font-extrabold text-slate-900">Todo lo que Necesitas para Triunfar</h2>
-					<p class="mt-4 max-w-2xl mx-auto text-stone-600">
-						Herramientas intuitivas para que te concentres en lo que realmente importa.
-					</p>
-				</div>
-				<div class="grid md:grid-cols-3 gap-12 text-center">
-					<div class="feature-item">
-						<div class="text-4xl text-slate-500 mb-4">✓</div>
-						<h3 class="text-xl font-bold text-slate-800 mb-2">Gestión de Clientes</h3>
-						<p class="text-stone-600">
-							Toda la información de tus clientes centralizada en un solo lugar. Accesible, segura y fácil de gestionar.
-						</p>
-					</div>
-					<div class="feature-item">
-						<div class="text-4xl text-slate-500 mb-4">✓</div>
-						<h3 class="text-xl font-bold text-slate-800 mb-2">Facturación Simplificada</h3>
-						<p class="text-stone-600">
-							Crea, envía y gestiona facturas en segundos. Ahorra tiempo y cobra más rápido que nunca.
-						</p>
-					</div>
-					<div class="feature-item">
-						<div class="text-4xl text-slate-500 mb-4">✓</div>
-						<h3 class="text-xl font-bold text-slate-800 mb-2">Reportes Inteligentes</h3>
-						<p class="text-stone-600">
-							Obtén una visión clara del rendimiento de tu negocio con reportes automáticos y fáciles de entender.
-						</p>
-					</div>
-				</div>
-			</div>
-		</section>
+<section id="clases" class="py-20 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-bold">Nuestras Disciplinas</h2>
+      <p class="text-gray-600 mt-2">Encuentra el arte marcial que se adapta a ti.</p>
+    </div>
 
-		<section id="cta" class="py-20 bg-slate-800">
-			<div class="container mx-auto px-6 text-center">
-				<h2 class="text-3xl font-bold text-white">¿Listo para llevar tu negocio al siguiente nivel?</h2>
-				<p class="mt-4 max-w-xl mx-auto text-slate-300">
-					Crea tu cuenta hoy y descubre cómo nuestro sistema puede trabajar para ti.
-				</p>
-				<div class="mt-8">
-					<a href="/login" class="bg-white text-slate-800 font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-stone-200 transition-transform duration-300 inline-block transform hover:scale-105">
-						Crear mi Cuenta Gratis
-					</a>
-				</div>
-			</div>
-		</section>
-	</main>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {#each classes as martialArt}
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden text-center">
+          <img src={martialArt.img} alt={martialArt.name} class="w-full h-48 object-cover" />
+          <div class="p-6">
+            <h3 class="text-2xl font-bold mb-2">{martialArt.name}</h3>
+            <p class="text-gray-700">{martialArt.description}</p>
+          </div>
+        </div>
+      {/each}
+    </div>
+  </div>
+</section>
 
-	<footer class="bg-stone-100">
-		<div class="container mx-auto px-6 py-8 text-center text-stone-500">
-			<p>&copy; {new Date().getFullYear()} [Nombre de tu Empresa]. Todos los derechos reservados.</p>
-		</div>
-	</footer>
-</div>
+<section id="cta" class="bg-badger-dark">
+  <div class="container mx-auto px-4 py-16 text-center">
+    <h2 class="text-3xl font-bold text-white">¿Listo para tu clase de prueba?</h2>
+    <p class="text-gray-300 mt-2 mb-6">
+      El primer paso es el más importante. ¡Te esperamos en el tatami!
+    </p>
+    <a href="/contacto" class="bg-badger-accent text-badger-dark font-bold py-3 px-8 rounded-lg hover:opacity-90 transition-opacity">
+      Contáctanos
+    </a>
+  </div>
+</section>
