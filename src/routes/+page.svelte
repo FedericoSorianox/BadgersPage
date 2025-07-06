@@ -5,36 +5,41 @@
   // Datos de ejemplo para nuestras clases.
   const classes = [
     {
-      name: 'Jiu-Jitsu Brasileño',
-      description: 'El arte suave. Domina técnicas de control y sumisión en el suelo. Ideal para la defensa personal.',
-      img: 'https://via.placeholder.com/400x300?text=Jiu-Jitsu' // Reemplaza con una imagen real
+      name: 'Jiu Jitsu Gi',
+      description: 'El arte suave. Domina técnicas de control y sumisión en el sueloy de pie. Es una disciplina deportiva y de defensa personal en la cual se utiliza el GI',
+      img: 'https://cdn.evolve-mma.com/wp-content/uploads/2018/09/dlr.jpg' // Reemplaza con una imagen real
     },
     {
       name: 'Muay Thai',
-      description: 'Conocido como el arte de las ocho extremidades. Un striking contundente que mejora tu condición física.',
-      img: 'https://via.placeholder.com/400x300?text=Muay+Thai' // Reemplaza con una imagen real
+      description: 'Combina puños, codos, rodillas y piernas. Conocido como el arte de las ocho extremidades. Arte macrial de origen tailandés. Es una disciplina deportiva y de defensa personal',
+      img: 'https://media.istockphoto.com/id/2149192489/photo/two-young-professional-boxer-having-a-competition-tournament-on-stage-attractive-male-athlete.jpg?s=612x612&w=0&k=20&c=Y9pbrzF3iSuyI4m5chdsabRbX8X2k7Wp11T1EoCpqKE=' // Reemplaza con una imagen real
     },
     {
-      name: 'Boxeo',
-      description: 'Disciplina y agilidad. Aprende el juego de pies, la defensa y los golpes precisos de este deporte olímpico.',
-      img: 'https://via.placeholder.com/400x300?text=Boxeo' // Reemplaza con una imagen real
-    }
+      name: 'Jiu Jitsu No Gi',
+      description: 'Jiu Jitsu sin el uso del GI. Enfocado en técnicas de control y sumisión sin el uniforme. Es una disciplina deportiva y de defensa personal en la cual se utiliza ropa deportiva',
+      img: 'https://as2.ftcdn.net/v2/jpg/04/81/31/81/1000_F_481318179_fKQ1ApO31J5owIEqkUh2eFnbVAbrBG1C.jpg' // Reemplaza con una imagen real
+    },
   ];
 </script>
 
-<section class="flex flex-col items-center justify-center bg-badger-dark text-center text-badger-light py-20">
-  <img src="/logo-badgers.png" alt="Logo de The Badgers" class="w-32 h-32 mb-4" />
-  <h1 class="text-5xl font-extrabold mb-4">
+<section class="flex flex-col items-center justify-center bg-badger-dark text-center text-badger-light py-20 px-4">
+  
+  <img src="/logo-badgers.png" alt="Logo de The Badgers" class="w-64 md:w-80 mb-8" />
+
+  <h1 class="text-4xl font-extrabold mb-4">
     Forja tu Carácter en <span class="text-badger-accent">The Badgers</span>
   </h1>
+  
   <p class="max-w-2xl mb-8 text-lg text-gray-300">
     Más que una academia, una comunidad. Descubre la disciplina, el respeto y la fuerza a través de las artes marciales.
   </p>
-  <div>
-    <a href="/clases" class="bg-badger-accent text-badger-dark font-bold py-3 px-6 rounded-lg hover:opacity-90 transition-opacity">
+  
+  <div class="mt-4">
+    <a href="/clases" class="bg-badger-accent text-badger-dark font-bold py-3 px-6 rounded-lg hover:opacity-90 transition-transform duration-300 ease-in-out hover:scale-105">
       Ver Clases y Horarios
     </a>
   </div>
+
 </section>
 
 <section id="clases" class="py-20 bg-gray-50">
