@@ -1,0 +1,28 @@
+import { c as create_ssr_component, d as each, a as add_attribute, e as escape } from "../../chunks/ssr.js";
+const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  const classes = [
+    {
+      name: "Jiu Jitsu Gi",
+      description: "El arte suave. Domina técnicas de control y sumisión en el sueloy de pie. Es una disciplina deportiva y de defensa personal en la cual se utiliza el GI",
+      img: "https://cdn.evolve-mma.com/wp-content/uploads/2018/09/dlr.jpg"
+    },
+    {
+      name: "Muay Thai",
+      // Reemplaza con una imagen real
+      description: "Combina puños, codos, rodillas y piernas. Conocido como el arte de las ocho extremidades. Arte macrial de origen tailandés. Es una disciplina deportiva y de defensa personal",
+      img: "https://media.istockphoto.com/id/2149192489/photo/two-young-professional-boxer-having-a-competition-tournament-on-stage-attractive-male-athlete.jpg?s=612x612&w=0&k=20&c=Y9pbrzF3iSuyI4m5chdsabRbX8X2k7Wp11T1EoCpqKE="
+    },
+    {
+      name: "Jiu Jitsu No Gi",
+      // Reemplaza con una imagen real
+      description: "Jiu Jitsu sin el uso del GI. Enfocado en técnicas de control y sumisión sin el uniforme. Es una disciplina deportiva y de defensa personal en la cual se utiliza ropa deportiva",
+      img: "https://as2.ftcdn.net/v2/jpg/04/81/31/81/1000_F_481318179_fKQ1ApO31J5owIEqkUh2eFnbVAbrBG1C.jpg"
+    }
+  ];
+  return `<section class="flex flex-col items-center justify-center bg-badger-dark text-center text-badger-light py-20 px-4" data-svelte-h="svelte-19uy6nb"><img src="/logo-badgers.png" alt="Logo de The Badgers" class="w-64 md:w-80 mb-8"> <h1 class="text-4xl font-extrabold mb-4">Forja tu Carácter en <span class="text-badger-accent">The Badgers</span></h1> <p class="max-w-2xl mb-8 text-lg text-gray-300">Más que una academia, una comunidad. Descubre la disciplina, el respeto y la fuerza a través de las artes marciales.</p> <div class="mt-4"><a href="/clases" class="bg-badger-accent text-badger-dark font-bold py-3 px-6 rounded-lg hover:opacity-90 transition-transform duration-300 ease-in-out hover:scale-105">Ver Clases y Horarios</a></div></section> <section id="clases" class="py-20 bg-gray-50"><div class="container mx-auto px-4"><div class="text-center mb-12" data-svelte-h="svelte-7jsi0d"><h2 class="text-4xl font-bold">Nuestras Disciplinas</h2> <p class="text-gray-600 mt-2">Encuentra el arte marcial que se adapta a ti.</p></div> <div class="grid grid-cols-1 md:grid-cols-3 gap-8">${each(classes, (martialArt) => {
+    return `<div class="bg-white rounded-lg shadow-lg overflow-hidden text-center"><img${add_attribute("src", martialArt.img, 0)}${add_attribute("alt", martialArt.name, 0)} class="w-full h-48 object-cover"> <div class="p-6"><h3 class="text-2xl font-bold mb-2">${escape(martialArt.name)}</h3> <p class="text-gray-700">${escape(martialArt.description)}</p></div> </div>`;
+  })}</div></div></section> <section id="cta" class="bg-badger-dark" data-svelte-h="svelte-ki73qr"><div class="container mx-auto px-4 py-16 text-center"><h2 class="text-3xl font-bold text-white">¿Listo para tu clase de prueba?</h2> <p class="text-gray-300 mt-2 mb-6">El primer paso es el más importante. ¡Te esperamos en el tatami!</p> <a href="/contacto" class="bg-badger-accent text-badger-dark font-bold py-3 px-8 rounded-lg hover:opacity-90 transition-opacity">Contáctanos</a></div></section>`;
+});
+export {
+  Page as default
+};

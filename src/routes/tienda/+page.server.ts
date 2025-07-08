@@ -1,5 +1,6 @@
-export const load = async ({ locals }: { locals: any }) => {
-  const { data, error } = await locals.supabase
+export const load = async ({ locals }) => {
+  const { supabaseClient } = locals;
+  const { data, error } = await supabaseClient
     .from('productos')
     .select('*');
 

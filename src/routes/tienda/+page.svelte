@@ -13,7 +13,7 @@
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
     {#each data.productos as producto}
       <div class="bg-white border rounded-lg shadow-lg overflow-hidden flex flex-col">
-        <img src={producto.imagen_url} alt={producto.nombre} class="w-full h-64 object-cover">
+        <img src={producto.imagen} alt={producto.nombre} class="w-full h-64 object-cover">
 
         <div class="p-6 flex flex-col flex-grow">
           <div class="flex justify-between items-start mb-2">
