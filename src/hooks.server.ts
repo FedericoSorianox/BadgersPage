@@ -1,10 +1,13 @@
+import {
+	PUBLIC_SUPABASE_URL,
+	PUBLIC_SUPABASE_ANON_KEY
+} from '$env/static/public';
 import { createSupabaseServerClient } from '@supabase/auth-helpers-sveltekit';
 
 export const handle = async ({ event, resolve }) => {
 	event.locals.supabase = createSupabaseServerClient({
-		supabaseUrl: 'https://hmohjwrwpuwmyecdxgon.supabase.co',
-		supabaseKey:
-			'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhtb2hqd3J3cHV3bXllY2R4Z29uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg4ODYyMTMsImV4cCI6MjA2NDQ2MjIxM30.MBVkKFd4zfvXxfG_TH5QZTyUTRNeBCTXXFZrB3Q4fEc',
+		supabaseUrl: PUBLIC_SUPABASE_URL,
+		supabaseKey: PUBLIC_SUPABASE_ANON_KEY,
 		event
 	});
 
