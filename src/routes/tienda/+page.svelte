@@ -22,10 +22,6 @@
           </div>
 
           <p class="text-gray-600 mb-4 flex-grow">{producto.descripcion}</p>
-
-          <button class="mt-auto w-full bg-badger-dark text-white font-bold py-2 px-4 rounded-lg hover:bg-opacity-90 transition-all">
-            Añadir al Carrito
-          </button>
         </div>
       </div>
     {/each}
