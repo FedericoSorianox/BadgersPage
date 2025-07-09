@@ -22,7 +22,7 @@
   ];
 </script>
 
-<section class="flex flex-col items-center justify-center bg-badger-dark text-center text-badger-light py-20 px-4">
+<section class="flex flex-col items-center justify-center text-center text-badger-light py-20 px-4 bg-[radial-gradient(ellipse_at_center,rgba(0,206,209,0.15)_0%,#212121_70%)]">
   
   <img src="/logo-badgers.png" alt="Logo de The Badgers" class="w-64 md:w-80 mb-8" />
 

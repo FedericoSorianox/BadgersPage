@@ -1,88 +1,226 @@
 <script lang="ts">
-  // --- DATOS DE LAS CLASES ---
-  // TODO: Ajusta esta sección para que refleje las clases que ofreces.
-  const classes = [
-    {
-      name: 'Jiu Jitsu con GI',
-      description: 'Clases de Jiu Jitsu con el uniforme tradicional (Gi). Aprende técnicas de agarre, derribos y sumisiones. Todos los niveles desde principiantes hasta avanzados.',
-      img: 'https://via.placeholder.com/600x400?text=Jiu-Jitsu' // Reemplaza con una imagen real
-    },
-    {
-      name: 'Muay Thai',
-      description: 'El arte marcial mas completo de combate de pie. Las clases estan diseñadas para todos los niveles, desde principiantes hasta avanzados. Entrenamos y estudiamos a detalle el arte del combate.',
-      img: 'https://via.placeholder.com/600x400?text=Muay+Thai' // Reemplaza con una imagen real
-    },
-    {
-      name: 'Jiu Jitsu No Gi',
-      description: 'No necesitas el Gi para estas clases. Enfocadas en técnicas de agarre y sumisiones sin el uniforme tradicional. Ideal para quienes buscan una experiencia más dinámica y rápida. ',
-      img: 'https://via.placeholder.com/600x400?text=Kids+MMA' // Reemplaza con una imagen real
-    }
-  ];
+	import { enhance } from '$app/forms';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { Textarea } from '$lib/components/ui/textarea';
+	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+	import { Label } from '$lib/components/ui/label';
 
-  // --- DATOS DEL HORARIO SEMANAL ---
-  // TODO: Modifica esta estructura con tus horarios reales. 
-  // Usa un string vacío '' si no hay clase en esa franja.
-  const scheduleData = [
-    { hora: '07:30 - 08:30', lunes: 'Muay thai', martes: 'Jiu Jitsu GI', miercoles: 'Muay Thai', jueves: 'Jiu Jitsu GI', viernes: '', sabado: 'Open Mat 10.30 AM' },
-    { hora: '11:30 - 12:30', lunes: 'Jiu Jitsu GI', martes: '', miercoles: 'Jiu Jitsu GI', jueves: '', viernes: '', sabado: '' },
-    { hora: '19:00 - 20:00', lunes: 'Muay Thai', martes: 'Jiu Jitsu No GI', miercoles: 'Muay Thai', jueves: 'Jiu Jitsu No Gi', viernes: 'Libre/Repaso Muay Thai', sabado: '' },
-    { hora: '20:00 - 21:00', lunes: 'Jiu Jitsu GI', martes: 'Muay Thai', miercoles: 'Jiu Jitsu No Gi', jueves: 'Muay Thai', viernes: 'Libre/Repaso Jiu Jitsu', sabado: '' },
-  ];
+	export let data;
+	export let form;
+
+	$: classes = data.disciplines || [];
+	$: scheduleData = data.schedule || [];
+	$: events = data.events || [];
+	$: isAdmin = data.isAdmin;
+
+	let scheduleDataForForm: string = '';
+
+	// TODO: Añadir un sistema de notificaciones más elegante si se desea.
 </script>
 
+{#if form?.message}
+	<div
+		class="fixed top-20 right-5 p-4 rounded-md shadow-lg z-50"
+		class:bg-green-100={form?.success}
+		class:text-green-800={form?.success}
+		class:bg-red-100={!form?.success}
+		class:text-red-800={!form?.success}
+		role="alert"
+	>
+		{form.message}
+	</div>
+{/if}
+
 <div class="container mx-auto px-4 py-16">
-  <div class="text-center mb-16">
-    <h1 class="text-4xl md:text-5xl font-extrabold">
-      Nuestras <span class="text-badger-accent">Disciplinas</span>
-    </h1>
-    <p class="text-lg text-gray-600 mt-2">Encuentra tu camino en el tatami.</p>
-  </div>
-  
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-    {#each classes as martialArt}
-      <div class="bg-white rounded-lg shadow-lg overflow-hidden text-center border">
-        <img src={martialArt.img} alt={martialArt.name} class="w-full h-48 object-cover" />
-        <div class="p-6">
-          <h3 class="text-2xl font-bold mb-2 text-badger-dark">{martialArt.name}</h3>
-          <p class="text-gray-700">{martialArt.description}</p>
-        </div>
-      </div>
-    {/each}
-  </div>
+	<div class="text-center mb-16">
+		<h1 class="text-4xl md:text-5xl font-extrabold">
+			Nuestras <span class="text-badger-accent">Disciplinas</span>
+		</h1>
+		<p class="text-lg text-gray-600 mt-2">Encuentra tu camino en el tatami.</p>
+	</div>
 
-  <div class="text-center mb-12">
-    <h2 class="text-4xl md:text-5xl font-extrabold">
-      Horario <span class="text-badger-accent">Semanal</span>
-    </h2>
-    <p class="text-lg text-gray-600 mt-2">Planifica tu entrenamiento.</p>
-  </div>
+	<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+		{#each classes as martialArt}
+			<div class="bg-white rounded-lg shadow-lg overflow-hidden text-center border">
+				<form
+					method="POST"
+					action="?/updateDiscipline"
+					use:enhance
+					class="flex flex-col h-full"
+					enctype="multipart/form-data"
+				>
+					<input type="hidden" name="id" value={martialArt.id} />
+					<input type="hidden" name="current_image_url" value={martialArt.image_url} />
 
-  <div class="overflow-x-auto bg-white rounded-lg shadow-xl border">
-    <table class="w-full text-sm text-left text-gray-700">
-      <thead class="text-xs text-badger-dark uppercase bg-gray-200">
-        <tr>
-          <th scope="col" class="px-6 py-3">Hora</th>
-          <th scope="col" class="px-6 py-3">Lunes</th>
-          <th scope="col" class="px-6 py-3">Martes</th>
-          <th scope="col" class="px-6 py-3">Miércoles</th>
-          <th scope="col" class="px-6 py-3">Jueves</th>
-          <th scope="col" class="px-6 py-3">Viernes</th>
-          <th scope="col" class="px-6 py-3">Sábado</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each scheduleData as row, i}
-          <tr class="border-b {i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}">
-            <th scope="row" class="px-6 py-4 font-bold text-badger-dark whitespace-nowrap">{row.hora}</th>
-            <td class="px-6 py-4">{row.lunes}</td>
-            <td class="px-6 py-4">{row.martes}</td>
-            <td class="px-6 py-4">{row.miercoles}</td>
-            <td class="px-6 py-4">{row.jueves}</td>
-            <td class="px-6 py-4">{row.viernes}</td>
-            <td class="px-6 py-4">{row.sabado}</td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
+					<img
+						src={martialArt.image_url || 'https://via.placeholder.com/600x400?text=The+Badgers'}
+						alt={martialArt.name}
+						class="w-full h-48 object-cover"
+					/>
+					<div class="p-6 flex flex-col flex-grow">
+						{#if isAdmin}
+							<Input class="text-2xl font-bold mb-2 text-center" name="name" value={martialArt.name} />
+							<Textarea class="text-gray-700 flex-grow" name="description" value={martialArt.description} />
+						{:else}
+							<h3 class="text-2xl font-bold mb-2 text-badger-dark">{martialArt.name}</h3>
+							<p class="text-gray-700">{martialArt.description}</p>
+						{/if}
+					</div>
+					{#if isAdmin}
+						<div class="p-6 pt-0 space-y-4">
+							<div>
+								<label for="image-{martialArt.id}" class="sr-only">Cambiar Imagen</label>
+								<Input id="image-{martialArt.id}" name="image" type="file" accept="image/*" />
+							</div>
+							<Button type="submit" class="w-full">Guardar Cambios</Button>
+						</div>
+					{/if}
+				</form>
+			</div>
+		{/each}
+	</div>
+
+	<!-- Sección de Eventos -->
+	<div class="text-center mb-12">
+		<h2 class="text-4xl md:text-5xl font-extrabold">
+			Próximos <span class="text-badger-accent">Eventos</span>
+		</h2>
+		<p class="text-lg text-gray-600 mt-2">¡No te pierdas nuestras próximas actividades!</p>
+	</div>
+
+	<div class="max-w-4xl mx-auto mb-20">
+		<Card>
+			<CardHeader>
+				<CardTitle>Calendario de Eventos</CardTitle>
+			</CardHeader>
+			<CardContent class="space-y-6">
+				{#each events as event}
+					<div class="p-4 border rounded-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+						<div class="flex items-start gap-4">
+							<img
+								src={event.image_url || 'https://via.placeholder.com/150?text=Evento'}
+								alt="Imagen del evento {event.title}"
+								class="w-24 h-24 object-cover rounded-md hidden sm:block"
+							/>
+							<div>
+								<p class="font-bold text-lg">{event.title}</p>
+								<p class="text-sm text-gray-600">
+									{new Date(event.event_date + 'T00:00:00').toLocaleDateString('es-ES', {
+										year: 'numeric',
+										month: 'long',
+										day: 'numeric'
+									})}
+								</p>
+								<p class="mt-2">{event.description}</p>
+							</div>
+						</div>
+						{#if isAdmin}
+							<div class="flex space-x-2 self-start md:self-center">
+								<!-- TODO: Implementar un modal para editar -->
+								<Button variant="outline" size="sm">Editar</Button>
+								<form method="POST" action="?/deleteEvent" use:enhance>
+									<input type="hidden" name="id" value={event.id} />
+									<input type="hidden" name="current_image_url" value={event.image_url} />
+									<Button type="submit" variant="destructive" size="sm">Eliminar</Button>
+								</form>
+							</div>
+						{/if}
+					</div>
+				{/each}
+
+				{#if events.length === 0}
+					<p class="text-center text-gray-500">No hay eventos programados por el momento.</p>
+				{/if}
+
+				{#if isAdmin}
+					<div class="pt-6 border-t">
+						<h3 class="text-lg font-semibold mb-4">Añadir Nuevo Evento</h3>
+						<form method="POST" action="?/saveEvent" use:enhance class="space-y-4" enctype="multipart/form-data">
+							<div>
+								<Label for="title">Título del Evento</Label>
+								<Input id="title" name="title" required />
+							</div>
+							<div>
+								<Label for="event_date">Fecha</Label>
+								<Input id="event_date" name="event_date" type="date" required />
+							</div>
+							<div>
+								<Label for="description">Descripción</Label>
+								<Textarea id="description" name="description" />
+							</div>
+							<div>
+								<Label for="image">Imagen del Evento</Label>
+								<Input id="image" name="image" type="file" accept="image/*" />
+							</div>
+							<Button type="submit" class="w-full">Guardar Evento</Button>
+						</form>
+					</div>
+				{/if}
+			</CardContent>
+		</Card>
+	</div>
+
+	<div class="text-center mb-12">
+		<h2 class="text-4xl md:text-5xl font-extrabold">
+			Horario <span class="text-badger-accent">Semanal</span>
+		</h2>
+		<p class="text-lg text-gray-600 mt-2">Planifica tu entrenamiento.</p>
+	</div>
+
+	<form
+		method="POST"
+		action="?/updateSchedule"
+		use:enhance
+	>
+		<input type="hidden" name="scheduleData" value={JSON.stringify(scheduleData)} />
+		<div class="overflow-x-auto bg-white rounded-lg shadow-xl border">
+			<table class="w-full text-sm text-left text-gray-700">
+				<thead class="text-xs text-badger-dark uppercase bg-gray-200">
+					<tr>
+						<th scope="col" class="px-6 py-3">Hora</th>
+						<th scope="col" class="px-6 py-3">Lunes</th>
+						<th scope="col" class="px-6 py-3">Martes</th>
+						<th scope="col" class="px-6 py-3">Miércoles</th>
+						<th scope="col" class="px-6 py-3">Jueves</th>
+						<th scope="col" class="px-6 py-3">Viernes</th>
+						<th scope="col" class="px-6 py-3">Sábado</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each scheduleData as row, i}
+						<tr class="border-b {i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}">
+							{#if isAdmin}
+								<td class="px-6 py-4"><Input name="time_slot" bind:value={row.time_slot} /></td>
+								<td class="px-6 py-4"><Input name="monday" bind:value={row.monday} /></td>
+								<td class="px-6 py-4"><Input name="tuesday" bind:value={row.tuesday} /></td>
+								<td class="px-6 py-4"><Input name="wednesday" bind:value={row.wednesday} /></td>
+								<td class="px-6 py-4"><Input name="thursday" bind:value={row.thursday} /></td>
+								<td class="px-6 py-4"><Input name="friday" bind:value={row.friday} /></td>
+								<td class="px-6 py-4"><Input name="saturday" bind:value={row.saturday} /></td>
+							{:else}
+								<th
+									scope="row"
+									class="px-6 py-4 font-bold text-badger-dark whitespace-nowrap"
+								>
+									{row.time_slot}
+								</th>
+								<td class="px-6 py-4">{row.monday}</td>
+								<td class="px-6 py-4">{row.tuesday}</td>
+								<td class="px-6 py-4">{row.wednesday}</td>
+								<td class="px-6 py-4">{row.thursday}</td>
+								<td class="px-6 py-4">{row.friday}</td>
+								<td class="px-6 py-4">{row.saturday}</td>
+							{/if}
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
+		{#if isAdmin}
+			<div class="mt-4">
+				<Button type="submit" class="w-full">Guardar Horario</Button>
+			</div>
+		{/if}
+	</form>
 </div>
