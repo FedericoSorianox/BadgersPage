@@ -46,9 +46,9 @@
             {#each products as product, i}
               <tr class="border-b">
                 <td class="px-4 py-2">{i + 1}</td>
-                <td class="px-4 py-2">{product.name}</td>
-                <td class="px-4 py-2">{product.description}</td>
-                <td class="px-4 py-2">${product.price}</td>
+                <td class="px-4 py-2">{product.nombre}</td>
+                <td class="px-4 py-2">{product.descripcion}</td>
+                <td class="px-4 py-2">${product.precio}</td>
                 <td class="px-4 py-2">
                   <a href="/admin/products/{product.id}" class="text-blue-600 hover:underline">
                     Editar
