@@ -14,9 +14,9 @@
     console.log('Login page mounted');
     
     // Verificar si ya está autenticado
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('Session check:', session);
-      if (session) {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      console.log('User check:', user);
+      if (user) {
         debugInfo += ' - Usuario ya autenticado, redirigiendo...';
         goto('/');
       }

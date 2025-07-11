@@ -2,87 +2,76 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async ({ params, locals: { supabase } }) => {
-  const { id } = params;
-  if (!id) {
-    throw error(400, 'Product ID is required');
-  }
+export const load: PageServerLoad = async ({ locals: { supabase }, params }) => {
+	const { data: product, error } = await supabase
+		.from('productos')
+		.select('*')
+		.eq('id', params.id)
+		.single();
 
-  const { data: producto, error: dbError } = await supabase
-    .from('productos')
-    .select('*')
-    .eq('id', id)
-    .single();
+	if (error || !product) {
+		throw redirect(303, '/admin/inventario');
+	}
 
-  if (dbError) {
-    throw error(500, `Error fetching product: ${dbError.message}`);
-  }
+	let img_url = '';
+	if (product.imagen) {
+		const imagePath = product.imagen.startsWith('/') ? product.imagen.substring(1) : product.imagen;
+		const { data: imageUrl } = supabase.storage
+			.from('product-images')
+			.getPublicUrl(imagePath);
+		img_url = imageUrl.publicUrl;
+	}
 
-  if (!producto) {
-    throw error(404, 'Product not found');
-  }
-
-  return {
-    producto,
-  };
+	return { product: { ...product, img_url } };
 };
 
 export const actions: Actions = {
-  default: async ({ request, params, locals: { supabase } }) => {
-    const { id } = params;
-    const formData = await request.formData();
-    const nombre = formData.get('nombre') as string;
-    const descripcion = formData.get('descripcion') as string;
-    const precio = parseFloat(formData.get('precio') as string);
-    const categoria = formData.get('categoria') as string;
-    const newImageFile = formData.get('imagen') as File;
-    let imagenUrl = formData.get('current_image_url') as string;
+	updateProduct: async ({ request, locals: { supabase }, params }) => {
+		const formData = await request.formData();
+		const nombre = formData.get('nombre') as string;
+		const precio = parseFloat(formData.get('precio') as string);
+		const costo = parseFloat(formData.get('cost') as string);
+		const stock = parseInt(formData.get('stock') as string, 10);
+		const newImageFile = formData.get('imagen') as File;
 
-    if (isNaN(precio) || precio <= 0) {
-        return fail(400, { error: 'El precio debe ser un número positivo.' });
-    }
+		const productData: {
+			nombre: string;
+			precio: number;
+			cost: number;
+			stock: number;
+			imagen?: string;
+		} = {
+			nombre,
+			precio,
+			cost: costo,
+			stock
+		};
 
-    // Si se subió una nueva imagen, procesarla
-    if (newImageFile && newImageFile.size > 0) {
-        const fileName = `${Date.now()}_${newImageFile.name}`;
-        const { error: uploadError } = await supabase.storage
-            .from('product-images')
-            .upload(fileName, newImageFile);
+		// Si se subió una nueva imagen, la procesamos
+		if (newImageFile && newImageFile.size > 0) {
+			const imagePath = `${Date.now()}_${newImageFile.name}`;
+			const { error: uploadError } = await supabase.storage
+				.from('product-images')
+				.upload(imagePath, newImageFile);
 
-        if (uploadError) {
-            return fail(500, { error: `Error al subir la nueva imagen: ${uploadError.message}` });
-        }
+			if (uploadError) {
+				return fail(500, { success: false, message: `Error al subir la imagen: ${uploadError.message}` });
+			}
+			productData.imagen = imagePath;
+		}
 
-        const { data: publicUrlData } = supabase.storage
-            .from('product-images')
-            .getPublicUrl(fileName);
-        
-        imagenUrl = publicUrlData.publicUrl;
-        
-        // Opcional: Borrar la imagen antigua si existe y no es una de las de ejemplo
-        const oldImageUrl = formData.get('current_image_url') as string;
-        if (oldImageUrl && !oldImageUrl.startsWith('/products/')) {
-            const oldFileName = oldImageUrl.split('/').pop();
-            if(oldFileName) await supabase.storage.from('product-images').remove([oldFileName]);
-        }
-    }
+		const { error: updateError } = await supabase
+			.from('productos')
+			.update(productData)
+			.eq('id', params.id);
 
+		if (updateError) {
+			return fail(500, {
+				success: false,
+				message: `Error al actualizar el producto: ${updateError.message}`
+			});
+		}
 
-    const { error: updateError } = await supabase
-      .from('productos')
-      .update({
-        nombre,
-        descripcion,
-        precio,
-        imagen: imagenUrl, // Usar la nueva URL o la existente
-        categoria,
-      })
-      .eq('id', id);
-
-    if (updateError) {
-      return fail(500, { error: `Error al actualizar el producto: ${updateError.message}` });
-    }
-
-    throw redirect(303, '/admin');
-  },
+		throw redirect(303, '/admin/inventario');
+	}
 }; 

@@ -1,0 +1,2 @@
+ALTER TABLE public.productos
+ADD COLUMN costo NUMERIC(10, 2) DEFAULT 0.00; 

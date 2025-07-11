@@ -2,9 +2,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { AuthApiError } from '@supabase/supabase-js';
 
-export const load: PageServerLoad = async ({ locals: { supabase, getSession } }) => {
-	const session = await getSession();
-
+export const load: PageServerLoad = async ({ locals: { supabase, session } }) => {
 	if (!session) {
 		redirect(303, '/login');
 	}
@@ -13,8 +11,7 @@ export const load: PageServerLoad = async ({ locals: { supabase, getSession } })
 };
 
 export const actions: Actions = {
-	updatePassword: async ({ request, locals: { supabase, getSession } }) => {
-		const session = await getSession();
+	updatePassword: async ({ request, locals: { supabase, session } }) => {
 		if (!session) {
 			redirect(303, '/login');
 		}

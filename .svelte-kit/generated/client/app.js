@@ -20,29 +20,35 @@ export const nodes = [
 	() => import('./nodes/16'),
 	() => import('./nodes/17'),
 	() => import('./nodes/18'),
-	() => import('./nodes/19')
+	() => import('./nodes/19'),
+	() => import('./nodes/20'),
+	() => import('./nodes/21'),
+	() => import('./nodes/22')
 ];
 
 export const server_loads = [0,2];
 
 export const dictionary = {
-		"/": [3],
+		"/": [~3],
 		"/account": [~4],
 		"/admin": [~5,[2]],
-		"/admin/create-user": [~6,[2]],
-		"/admin/products/new": [~8,[2]],
-		"/admin/products/[id]": [~7,[2]],
-		"/check-email": [9],
-		"/clases": [~10],
-		"/contacto": [11],
-		"/debug-login": [13],
-		"/debug": [12],
-		"/env-check": [14],
-		"/galeria": [~15],
-		"/login": [16],
-		"/sobre-nosotros": [17],
-		"/test-login": [18],
-		"/tienda": [~19]
+		"/admin/finanzas": [~6,[2]],
+		"/admin/inventario": [~7,[2]],
+		"/admin/pagos": [~8,[2]],
+		"/admin/products/new": [~10,[2]],
+		"/admin/products/[id]": [~9,[2]],
+		"/admin/socios": [~11,[2]],
+		"/check-email": [12],
+		"/clases": [~13],
+		"/contacto": [14],
+		"/debug-login": [16],
+		"/debug": [15],
+		"/env-check": [17],
+		"/galeria": [~18],
+		"/login": [19],
+		"/sobre-nosotros": [20],
+		"/test-login": [21],
+		"/tienda": [~22]
 	};
 
 export const hooks = {

@@ -1,8 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 
-export const load = async ({ locals: { supabase, getSession } }) => {
-	const session = await getSession();
-
+export const load = async ({ locals: { supabase, session } }) => {
 	// 1. Proteger ruta: si no hay sesión, redirigir a login
 	if (!session) {
 		console.log('No hay sesión. Redirigiendo a login.');

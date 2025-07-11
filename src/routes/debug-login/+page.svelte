@@ -16,12 +16,12 @@
     addDebugInfo('Verificando conexión con Supabase...');
     
     // Verificar conexión
-    supabase.auth.getSession().then(({ data, error }) => {
+    supabase.auth.getUser().then(({ data: { user }, error }) => {
       if (error) {
         addDebugInfo(`Error de conexión: ${error.message}`);
       } else {
         addDebugInfo('Conexión con Supabase exitosa');
-        addDebugInfo(`Sesión actual: ${data.session ? 'Activa' : 'No hay sesión'}`);
+        addDebugInfo(`Sesión actual: ${user ? 'Activa' : 'No hay sesión'}`);
       }
     });
   });

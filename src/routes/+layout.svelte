@@ -3,7 +3,7 @@
   import Navbar from '$lib/components/Navbar.svelte'; // Importamos nuestro nuevo componente
 </script>
 
-<div class="flex flex-col min-h-screen bg-gray-50">
+<div class="flex flex-col min-h-screen text-foreground">
   <Navbar />
 
   <main class="flex-grow">

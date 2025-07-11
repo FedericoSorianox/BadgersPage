@@ -1,45 +1,41 @@
-export const load = async ({ locals: { supabase } }) => {
-  try {
-    const { data, error } = await supabase.from('productos').select('*');
+import { error } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
+import type { Tables } from '$lib/database.types';
 
-    if (error) {
-      console.error('Error fetching products:', error);
-      // Si la tabla no existe, devolver productos de ejemplo
-      return { 
-        productos: [
-          {
-            id: '1',
-            nombre: 'Kimono Blanco',
-            descripcion: 'Kimono de Jiu Jitsu de alta calidad, color blanco',
-            precio: 89.99,
-            imagen: '/products/kimono blanco.jpg',
-            categoria: 'Kimonos'
-          },
-          {
-            id: '2',
-            nombre: 'Lycra BJJ',
-            descripcion: 'Lycra para Jiu Jitsu No-Gi, diseño moderno',
-            precio: 45.99,
-            imagen: '/products/Lycra bjj.jpg',
-            categoria: 'Lycras'
-          },
-          {
-            id: '3',
-            nombre: 'Cinturones',
-            descripcion: 'Cinturones de Jiu Jitsu de diferentes colores',
-            precio: 15.99,
-            imagen: '/products/cinturones.jpg',
-            categoria: 'Accesorios'
-          }
-        ] 
-      };
-    }
+export const load: PageServerLoad = async ({ locals: { supabase } }) => {
+	// Cargar solo los productos que son visibles y tienen stock
+	const { data: productsData, error: productsError } = await supabase
+		.from('productos')
+		.select('*')
+		.eq('is_visible', true)
+		.gt('stock', 0);
 
-    return {
-      productos: data ?? [],
-    };
-  } catch (err) {
-    console.error('Error in load function:', err);
-    return { productos: [] };
-  }
+	if (productsError) {
+		console.error('Error loading visible products with stock:', productsError);
+		throw error(500, { message: 'Error al cargar productos' });
+	}
+
+	// Añadir la URL pública de la imagen a cada producto
+	const products = (productsData || []).map((product: Tables<'productos'>) => {
+		let img_url = '';
+		if (product.imagen) {
+			// Comprobar si 'imagen' ya es una URL completa. Si no, generarla.
+			if (product.imagen.startsWith('http')) {
+				img_url = product.imagen;
+			} else {
+				const { data: imageData } = supabase.storage
+					.from('product-images')
+					.getPublicUrl(product.imagen);
+				img_url = imageData.publicUrl;
+			}
+		}
+		return {
+			...product,
+			img_url
+		};
+	});
+
+	return {
+		products
+	};
 };
