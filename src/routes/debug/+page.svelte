@@ -8,13 +8,24 @@
   let loading = true;
 
   onMount(async () => {
-    // Obtener sesión actual
-    const { data: { session: currentSession } } = await supabase.auth.getSession();
-    session = currentSession;
+    // Obtener sesión actual y validarla
+    const {
+      data: { session: currentSession }
+    } = await supabase.auth.getSession();
 
-    if (session) {
-      // Obtener perfil del usuario
-      profile = await checkUserProfile(session.user.id);
+    if (currentSession) {
+      const {
+        data: { user }
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        currentSession.user = user;
+        session = currentSession;
+        profile = await checkUserProfile(session.user.id);
+      } else {
+        session = null;
+        profile = null;
+      }
     }
 
     loading = false;

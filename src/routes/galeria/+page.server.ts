@@ -36,8 +36,7 @@ export const load: PageServerLoad = async ({ locals: { supabase } }) => {
 };
 
 export const actions: Actions = {
-  upload: async ({ request, locals: { supabase, getSession } }) => {
-    const session = await getSession();
+  upload: async ({ request, locals: { supabase, session } }) => {
     if (!session) {
       throw error(401, 'Unauthorized');
     }
@@ -105,8 +104,7 @@ export const actions: Actions = {
     return { success: true, message: 'File uploaded successfully' };
   },
 
-  delete: async ({ request, locals: { supabase, getSession } }) => {
-    const session = await getSession();
+  delete: async ({ request, locals: { supabase, session } }) => {
     if (!session) {
       throw error(401, 'Unauthorized');
     }

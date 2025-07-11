@@ -1,0 +1,2 @@
+ALTER TABLE public.productos
+ADD COLUMN is_visible BOOLEAN DEFAULT TRUE NOT NULL; 

@@ -50,13 +50,25 @@
 
   <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
     {#each galleryItems as item}
-      <div class="group relative cursor-pointer" on:click={() => openDialog(item)}>
+      <div
+        class="group relative cursor-pointer"
+        role="button"
+        tabindex="0"
+        on:click={() => openDialog(item)}
+        on:keydown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            openDialog(item);
+          }
+        }}
+      >
         {#if isVideo(item.file_name)}
           <video
             src={item.url}
             class="aspect-square w-full h-full object-cover rounded-lg shadow-md"
             controls
-          />
+          >
+            <track kind="captions" />
+          </video>
         {:else}
           <img
             src={item.url}
@@ -147,49 +159,61 @@
   {/if}
 </div>
 
-<dialog bind:this={dialog} on:click={closeDialog} on:close={handleDialogClose} class="bg-transparent p-0">
+<dialog bind:this={dialog} on:close={handleDialogClose} class="bg-transparent p-0">
   <div class="max-w-screen-xl max-h-screen relative">
     <button
-      on:click={() => dialog.close()}
-      class="absolute -top-10 -right-2 text-white text-4xl bg-black bg-opacity-50 rounded-full px-3 py-1"
-      aria-label="Close"
-    >
-      &times;
-    </button>
-    {#if selectedItem}
-      {#if isVideo(selectedItem.file_name)}
-        <video bind:this={videoElement} src={selectedItem.url} class="max-h-screen" controls autoplay />
-      {:else}
-        <img src={selectedItem.url} alt={selectedItem.title || selectedItem.file_name} class="max-h-screen" />
-      {/if}
-      <div
-        class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-75 text-white p-4 text-center"
+      on:click={closeDialog}
+      class="fixed inset-0 w-full h-full bg-transparent cursor-default"
+      aria-label="Close dialog"
+    />
+    <div class="relative">
+      <button
+        on:click={() => dialog.close()}
+        class="absolute -top-10 -right-2 text-white text-4xl bg-black bg-opacity-50 rounded-full px-3 py-1 z-10"
+        aria-label="Close"
       >
-        <p class="font-bold">{selectedItem.title || selectedItem.file_name}</p>
-        {#if selectedItem.clients?.name}
-          <p class="text-sm italic">Subido por: {selectedItem.clients.name}</p>
-        {/if}
-      </div>
-
-      {#if profile?.role === 'admin'}
-        <form
-          method="POST"
-          action="?/delete"
-          use:enhance
-          class="absolute top-2 left-2"
-        >
-          <input type="hidden" name="id" value={selectedItem.id} />
-          <input type="hidden" name="storage_path" value={selectedItem.storage_path} />
-          <button
-            type="submit"
-            class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-xs"
-            aria-label="Delete item"
+        &times;
+      </button>
+      {#if selectedItem}
+        {#if isVideo(selectedItem.file_name)}
+          <video
+            bind:this={videoElement}
+            src={selectedItem.url}
+            class="max-h-screen"
+            controls
+            autoplay
           >
-            Borrar
-          </button>
-        </form>
+            <track kind="captions" />
+          </video>
+        {:else}
+          <img
+            src={selectedItem.url}
+            alt={selectedItem.title || selectedItem.file_name}
+            class="max-h-screen"
+          />
+        {/if}
+        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-75 text-white p-4 text-center">
+          <p class="font-bold">{selectedItem.title || selectedItem.file_name}</p>
+          {#if selectedItem.clients?.name}
+            <p class="text-sm italic">Subido por: {selectedItem.clients.name}</p>
+          {/if}
+        </div>
+
+        {#if profile?.role === 'admin'}
+          <form method="POST" action="?/delete" use:enhance class="absolute top-2 left-2 z-10">
+            <input type="hidden" name="id" value={selectedItem.id} />
+            <input type="hidden" name="storage_path" value={selectedItem.storage_path} />
+            <button
+              type="submit"
+              class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-xs"
+              aria-label="Delete item"
+            >
+              Borrar
+            </button>
+          </form>
+        {/if}
       {/if}
-    {/if}
+    </div>
   </div>
 </dialog>
 

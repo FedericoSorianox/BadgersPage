@@ -21,7 +21,7 @@
     </div>
 
     <div class="text-gray-700 space-y-4 text-lg">
-      <h2 class="text-3xl font-bold text-badger-dark mb-4">La Filosofía de de la academia</h2>
+      <h2 class="text-3xl font-bold text-badger-dark mb-4">La Filosofía de la academia</h2>
       
       <p>
         Fundada en 2025 con la misión de crear un ambiente seguro y profesional para la práctica de las artes marciales, The Badgers nació de la pasión por la superación personal. Creemos que el tatami es un laboratorio para la vida, donde se forjan el carácter, el respeto y la resiliencia.

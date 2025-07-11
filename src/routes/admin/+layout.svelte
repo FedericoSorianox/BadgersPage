@@ -1,27 +1,54 @@
 <script lang="ts">
 	import '../../app.css';
+	import { page } from '$app/stores';
 
 	export let data;
 
 	$: session = data.session;
 	$: profile = data.profile;
+
+	const navLinks = [
+		{ href: '/admin', text: 'Dashboard' },
+		{ href: '/admin/socios', text: 'Socios' },
+		{ href: '/admin/pagos', text: 'Pagos' },
+		{ href: '/admin/inventario', text: 'Inventario' },
+		{ href: '/admin/finanzas', text: 'Finanzas' }
+	];
 </script>
 
 {#if session && profile?.role === 'admin'}
 	<div class="flex flex-col min-h-screen bg-gray-50">
-
 		<main class="flex-grow container mx-auto p-4">
-			<div class="p-4 bg-gray-100 border-b flex items-center justify-between">
-				<div>
-					<span class="font-bold">Usuario:</span>
-					{session.user.email}
-					<span class="ml-4 font-bold">Rol:</span>
-					<span class="bg-green-200 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">
-						{profile.role}
-					</span>
+			<!-- User Info and Tabs Navigation -->
+			<div class="bg-gray-100 rounded-lg p-4 mb-8">
+				<div class="flex justify-between items-center mb-4">
+					<div>
+						<span class="font-bold">Usuario:</span>
+						{session.user.email}
+						<span class="ml-4 font-bold">Rol:</span>
+						<span class="bg-green-200 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+							{profile.role}
+						</span>
+					</div>
 				</div>
-				<a href="/" class="text-blue-600 hover:underline">Volver al inicio</a>
+				<div class="mt-4">
+					<nav class="flex justify-center space-x-4" aria-label="Tabs">
+						{#each navLinks as link}
+							<a
+								href={link.href}
+								class="py-2 px-4 font-medium text-sm rounded-md transition-colors"
+								class:bg-blue-500={$page.url.pathname === link.href}
+								class:text-white={$page.url.pathname === link.href}
+								class:text-gray-600={$page.url.pathname !== link.href}
+								class:hover:bg-gray-200={$page.url.pathname !== link.href}
+							>
+								{link.text}
+							</a>
+						{/each}
+					</nav>
+				</div>
 			</div>
+
 			<div class="container mx-auto p-4">
 				<slot />
 			</div>
