@@ -4,13 +4,8 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   kit: {
-    // Se añade la configuración de 'routes' al adaptador
-    adapter: adapter({
-      routes: {
-        include: ['/*'],
-        exclude: ['<all>']
-      }
-    })
+    // Elimina completamente la configuración de 'routes' del adaptador
+    adapter: adapter() // <--- Deja el adaptador sin opciones, o con las que realmente necesites
   },
   preprocess: vitePreprocess()
 };
