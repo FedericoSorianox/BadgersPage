@@ -1,13 +1,12 @@
-import adapter from '@sveltejs/adapter-cloudflare';
+import adapter from '@sveltejs/adapter-vercel';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-  kit: {
-    // Elimina completamente la configuración de 'routes' del adaptador
-    adapter: adapter() // <--- Deja el adaptador sin opciones, o con las que realmente necesites
-  },
-  preprocess: vitePreprocess()
+	preprocess: vitePreprocess(),
+	kit: {
+		adapter: adapter()
+	}
 };
 
 export default config;
