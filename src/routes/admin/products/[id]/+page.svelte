@@ -6,7 +6,7 @@
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { formatCurrency } from '$lib/utils';
 	import { enhance } from '$app/forms';
-	import { toast, SvelteToast } from '@zerodevx/svelte-toast';
+	// import { toast, SvelteToast } from '@zerodevx/svelte-toast';
 	import { onMount } from 'svelte';
 
 	export let data: PageData;
@@ -24,15 +24,15 @@
 	$: ganancia = precio - costo;
 
 	onMount(() => {
-		if (form?.success) {
-			toast.push(form.message || 'Operación exitosa');
-		} else if (form?.message) {
-			toast.push(form.message, { theme: { '--toastBackground': '#F44336' } });
-		}
+		// if (form?.success) {
+		// 	toast.push(form.message || 'Operación exitosa');
+		// } else if (form?.message) {
+		// 	toast.push(form.message, { theme: { '--toastBackground': '#F44336' } });
+		// }
 	});
 </script>
 
-<SvelteToast />
+<!-- <SvelteToast /> -->
 
 <div class="max-w-2xl mx-auto py-8 px-4">
 	<Card>

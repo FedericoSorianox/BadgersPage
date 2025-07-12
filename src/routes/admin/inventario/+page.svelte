@@ -2,9 +2,9 @@
 	import type { PageData, ActionData } from './$types';
 	import { enhance } from '$app/forms';
 	import { onMount } from 'svelte';
-	import { toast, SvelteToast } from '@zerodevx/svelte-toast';
+	// import { toast, SvelteToast } from '@zerodevx/svelte-toast';
 	import { goto } from '$app/navigation';
-	import { format, parseISO, subDays, addDays } from 'date-fns';
+	// import { format, parseISO, subDays, addDays } from 'date-fns';
 	import { formatCurrency } from '$lib/utils';
 	import * as Select from '$lib/components/ui/select';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
@@ -31,29 +31,29 @@
 	}
 
 	onMount(() => {
-		if (form?.success) {
-			toast.push(form.message || 'Operación exitosa');
-		} else if (form?.message) {
-			toast.push(form.message, { theme: { '--toastBackground': '#F44336' } });
-		}
+		// if (form?.success) {
+		// 	toast.push(form.message || 'Operación exitosa');
+		// } else if (form?.message) {
+		// 	toast.push(form.message, { theme: { '--toastBackground': '#F44336' } });
+		// }
 	});
 
-	function goToPreviousWeek() {
-		const currentWeekStart = parseISO(data.weeklyStock.selectedWeek);
-		const prevWeekStart = subDays(currentWeekStart, 7);
-		const newWeek = format(prevWeekStart, 'yyyy-MM-dd');
-		goto(`/admin/inventario?week=${newWeek}`, { invalidateAll: true, noScroll: true });
-	}
+	// function goToPreviousWeek() {
+	// 	const currentWeekStart = parseISO(data.weeklyStock.selectedWeek);
+	// 	const prevWeekStart = subDays(currentWeekStart, 7);
+	// 	const newWeek = format(prevWeekStart, 'yyyy-MM-dd');
+	// 	goto(`/admin/inventario?week=${newWeek}`, { invalidateAll: true, noScroll: true });
+	// }
 
-	function goToNextWeek() {
-		const currentWeekStart = parseISO(data.weeklyStock.selectedWeek);
-		const nextWeekStart = addDays(currentWeekStart, 7);
-		const newWeek = format(nextWeekStart, 'yyyy-MM-dd');
-		goto(`/admin/inventario?week=${newWeek}`, { invalidateAll: true, noScroll: true });
-	}
+	// function goToNextWeek() {
+	// 	const currentWeekStart = parseISO(data.weeklyStock.selectedWeek);
+	// 	const nextWeekStart = addDays(currentWeekStart, 7);
+	// 	const newWeek = format(nextWeekStart, 'yyyy-MM-dd');
+	// 	goto(`/admin/inventario?week=${newWeek}`, { invalidateAll: true, noScroll: true });
+	// }
 </script>
 
-<SvelteToast />
+<!-- <SvelteToast /> -->
 
 <div class="container mx-auto p-4 space-y-6">
 	<h1 class="text-3xl font-bold">Gestión de Inventario</h1>

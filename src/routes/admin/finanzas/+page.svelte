@@ -12,7 +12,7 @@
 	import type { PageData, ActionData } from './$types';
 	import FinanceChart from '$lib/components/FinanceChart.svelte';
 	import { goto } from '$app/navigation';
-	import { toast, SvelteToast } from '@zerodevx/svelte-toast';
+	// import { toast, SvelteToast } from '@zerodevx/svelte-toast';
 	import { onMount } from 'svelte';
 	import * as Select from '$lib/components/ui/select';
 
@@ -142,15 +142,15 @@
 			: financialHistory.filter((item: FinancialHistoryItem) => item.type === activeFilter);
 
 	onMount(() => {
-		if (form?.success) {
-			toast.push(form.message || 'Operación exitosa');
-		} else if (form?.message) {
-			toast.push(form.message, { theme: { '--toastBackground': '#F44336' } });
-		}
+		// if (form?.success) {
+		// 	toast.push(form.message || 'Operación exitosa');
+		// } else if (form?.message) {
+		// 	toast.push(form.message, { theme: { '--toastBackground': '#F44336' } });
+		// }
 	});
 </script>
 
-<SvelteToast />
+<!-- <SvelteToast /> -->
 
 <div class="container mx-auto p-4 space-y-8">
 	<h1 class="text-3xl font-bold">Finanzas</h1>

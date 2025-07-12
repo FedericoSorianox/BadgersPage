@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Instagram, Smartphone, MapPin } from 'lucide-svelte';
+	// import { Instagram, Smartphone, MapPin } from 'lucide-svelte';
 </script>
 
 <div class="container mx-auto px-4 py-16">

@@ -3,19 +3,19 @@
 	import { derived } from 'svelte/store';
 	import { redirect } from '@sveltejs/kit';
 	import type { PageServerLoad } from './$types';
-	import { Bar, Doughnut } from 'svelte-chartjs';
-	import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale } from 'chart.js';
+	// import { Bar, Doughnut } from 'svelte-chartjs';
+// import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale } from 'chart.js';
 	import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
 
-	import {
-		Users,
-		UserX,
-		Archive,
-		CreditCard,
-		TrendingDown,
-		AlertTriangle
-	} from 'lucide-svelte';
+	// import {
+// 	Users,
+// 	UserX,
+// 	Archive,
+// 	CreditCard,
+// 	TrendingDown,
+// 	AlertTriangle
+// } from 'lucide-svelte';
 
 	export let data: PageServerLoad;
 	$: ({ stats, lowStockProducts, allProducts, allClients, inactiveClientsList, pendingClientsList, activeClientsList } = data);
@@ -50,7 +50,7 @@
 		return 'bg-yellow-100 text-yellow-800';
 	}
 
-	ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale);
+	// ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale);
 
 	let paymentStatusData: any;
 	$: if (stats) {
@@ -311,7 +311,7 @@
 				</div>
 				<div class="mt-4 h-64 flex items-center justify-center">
 					{#if stats.paidPayments > 0 || stats.pendingPayments > 0}
-						<Doughnut data={paymentStatusData} />
+						<!-- <Doughnut data={paymentStatusData} /> -->
 					{:else}
 						<p class="text-gray-500">No hay datos de pagos para el mes actual.</p>
 					{/if}
