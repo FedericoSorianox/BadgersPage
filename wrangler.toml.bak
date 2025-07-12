@@ -1,3 +1,0 @@
-name = "badgerspage"
-main = ".svelte-kit/output/server/index.js"
-compatibility_date = "2024-05-12" 

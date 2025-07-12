@@ -1,0 +1,5 @@
+name = "badgerspage"
+compatibility_date = "2024-05-12"
+
+[pages]
+pages_build_output_dir = ".svelte-kit/output/client" 
