@@ -1723,6 +1723,7 @@ const Dashboard = () => {
                             >
                                 <option value="weekly">Semanal (resetea cada Lunes)</option>
                                 <option value="monthly">Mensual (resetea el 1° de cada mes)</option>
+                                <option value="once">Nota / Sin Vencimiento (permanente hasta borrar)</option>
                             </select>
                         </div>
                         <div className="flex gap-2">
@@ -1948,7 +1949,7 @@ const Dashboard = () => {
 
                             {/* Monthly tasks */}
                             {tasks.filter(t => t.frequency === 'monthly').length > 0 && (
-                                <div>
+                                <div className="mb-5">
                                     <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
                                         <Calendar size={12} />
                                         Mensuales (resetea el 1° de cada mes)
@@ -1984,6 +1985,59 @@ const Dashboard = () => {
                                                             onClick={() => handleDeleteTask(task._id)}
                                                             className="p-1 rounded-lg text-slate-300 hover:text-red-400 hover:bg-red-50 transition-colors"
                                                             title="Eliminar tarea"
+                                                        >
+                                                            <Trash2 size={14} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Persistent Notes / Tasks (sin vencimiento) */}
+                            {tasks.filter(t => t.frequency === 'once' || t.frequency === 'note').length > 0 && (
+                                <div>
+                                    <p className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                                        <StickyNote size={12} className="text-amber-500" />
+                                        Notas & Tareas Únicas (sin vencimiento - se borran manualmente)
+                                    </p>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                        {tasks.filter(t => t.frequency === 'once' || t.frequency === 'note').map(task => {
+                                            const done = !!task.completedAt;
+                                            return (
+                                                <div
+                                                    key={task._id}
+                                                    className={`flex items-center justify-between p-4 rounded-xl border transition-all ${done
+                                                            ? 'bg-amber-50/70 border-amber-200'
+                                                            : 'bg-amber-50/30 border-amber-200/60 hover:border-amber-300'
+                                                        }`}
+                                                >
+                                                    <div className="flex items-center gap-3 min-w-0">
+                                                        <button
+                                                            onClick={() => !tasksLoading && handleToggleTask(task._id)}
+                                                            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${done
+                                                                    ? 'bg-amber-500 border-amber-500'
+                                                                    : 'border-amber-300 hover:border-amber-500 cursor-pointer bg-white'
+                                                                }`}
+                                                        >
+                                                            {done && <CheckCircle size={14} className="text-white" />}
+                                                        </button>
+                                                        <p className={`text-sm font-semibold truncate ${done ? 'text-amber-800/50 line-through' : 'text-amber-950'}`}>
+                                                            {task.name}
+                                                        </p>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                                                        {done ? (
+                                                            <span className="text-[10px] font-bold px-2 py-0.5 bg-amber-200/80 text-amber-900 rounded-full uppercase">Hecho</span>
+                                                        ) : (
+                                                            <span className="text-[10px] font-bold px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full uppercase">Nota</span>
+                                                        )}
+                                                        <button
+                                                            onClick={() => handleDeleteTask(task._id)}
+                                                            className="p-1 rounded-lg text-amber-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                                                            title="Eliminar nota"
                                                         >
                                                             <Trash2 size={14} />
                                                         </button>

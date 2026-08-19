@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const taskSchema = new mongoose.Schema({
     name:        { type: String, required: true },
-    // 'weekly' resets every Monday, 'monthly' resets on the 1st of each month
-    frequency:   { type: String, enum: ['weekly', 'monthly'], required: true },
+    // 'weekly' resets every Monday, 'monthly' resets on the 1st of each month, 'once'/'note' stays until manually deleted
+    frequency:   { type: String, enum: ['weekly', 'monthly', 'once', 'note'], required: true },
     completedAt: { type: Date, default: null }   // null = pending
 });
 
