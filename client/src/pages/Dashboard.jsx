@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Users, CreditCard, Package, UserX, Loader2, Search, Plus, DollarSign, TrendingUp, TrendingDown, Clock, CheckCircle, MessageCircle, Send, StickyNote, Calendar, UserCheck, Plane, ExternalLink, XCircle, Copy, Calculator, History, ClipboardList, RotateCcw, Trash2, ArrowLeftRight, Shield } from 'lucide-react';
+import { Users, CreditCard, Package, UserX, Loader2, Search, Plus, DollarSign, TrendingUp, TrendingDown, Clock, CheckCircle, MessageCircle, Send, StickyNote, Calendar, UserCheck, Plane, ExternalLink, XCircle, Copy, Calculator, History, ClipboardList, RotateCcw, Trash2, ArrowLeftRight, Shield, Eye, Pencil, Save } from 'lucide-react';
 import axios from 'axios';
 import Modal from '../components/Modal';
 import { API_URL } from '../config';
@@ -126,6 +126,9 @@ const Dashboard = () => {
     const [showAddTask, setShowAddTask] = useState(false);
     const [newTaskName, setNewTaskName] = useState('');
     const [newTaskFreq, setNewTaskFreq] = useState('weekly');
+    const [selectedNote, setSelectedNote] = useState(null);
+    const [isEditingNote, setIsEditingNote] = useState(false);
+    const [noteEditText, setNoteEditText] = useState('');
 
     // ── Asignacion semanal─────────────────────────────────────────────────
     // Monthly key ensures the starter is saved per-month (auto-resets next month)
@@ -708,6 +711,52 @@ const Dashboard = () => {
         } catch (err) {
             console.error('Error deleting task:', err);
             alert('Error al eliminar la tarea.');
+        } finally {
+            setTasksLoading(false);
+        }
+    };
+
+    const openNoteModal = (note, startInEdit = false) => {
+        setSelectedNote(note);
+        setNoteEditText(note.name || '');
+        setIsEditingNote(startInEdit);
+    };
+
+    const closeNoteModal = () => {
+        setSelectedNote(null);
+        setIsEditingNote(false);
+        setNoteEditText('');
+    };
+
+    const handleSaveNoteEdit = async () => {
+        const trimmed = noteEditText.trim();
+        if (!trimmed) {
+            alert('La nota no puede estar vacía.');
+            return;
+        }
+        if (!selectedNote) return;
+
+        setTasksLoading(true);
+        try {
+            const updatedTasks = (tasks || []).map(t =>
+                t._id === selectedNote._id
+                    ? { ...t, name: trimmed }
+                    : t
+            );
+            setTasks(updatedTasks);
+            const res = await axios.post(`${API_URL}/api/settings`, { tasks: updatedTasks });
+            const newTasks = res.data?.tasks || updatedTasks;
+            setTasks(newTasks);
+
+            const updatedNote = newTasks.find(t => t._id === selectedNote._id);
+            if (updatedNote) {
+                setSelectedNote(updatedNote);
+            }
+            setIsEditingNote(false);
+        } catch (err) {
+            console.error('Error saving note edit:', err);
+            alert('Error al guardar los cambios de la nota.');
+            setTasks(tasks);
         } finally {
             setTasksLoading(false);
         }
@@ -2001,7 +2050,7 @@ const Dashboard = () => {
                                 <div>
                                     <p className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-3 flex items-center gap-1.5">
                                         <StickyNote size={12} className="text-amber-500" />
-                                        Notas & Tareas Únicas (sin vencimiento - se borran manualmente)
+                                        Notas & Tareas Únicas (sin vencimiento - clic para ver/editar)
                                     </p>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                                         {tasks.filter(t => t.frequency === 'once' || t.frequency === 'note').map(task => {
@@ -2009,18 +2058,27 @@ const Dashboard = () => {
                                             return (
                                                 <div
                                                     key={task._id}
-                                                    className={`flex items-center justify-between p-4 rounded-xl border transition-all ${done
+                                                    className={`group flex items-center justify-between p-4 rounded-xl border transition-all ${done
                                                             ? 'bg-amber-50/70 border-amber-200'
-                                                            : 'bg-amber-50/30 border-amber-200/60 hover:border-amber-300'
+                                                            : 'bg-amber-50/40 border-amber-200/80 hover:border-amber-300 hover:shadow-sm'
                                                         }`}
                                                 >
-                                                    <div className="flex items-center gap-3 min-w-0">
+                                                    <div
+                                                        className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer"
+                                                        onClick={() => openNoteModal(task, false)}
+                                                        title="Ver nota completa"
+                                                    >
                                                         <button
-                                                            onClick={() => !tasksLoading && handleToggleTask(task._id)}
+                                                            type="button"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                if (!tasksLoading) handleToggleTask(task._id);
+                                                            }}
                                                             className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${done
                                                                     ? 'bg-amber-500 border-amber-500'
                                                                     : 'border-amber-300 hover:border-amber-500 cursor-pointer bg-white'
                                                                 }`}
+                                                            title={done ? 'Marcar como pendiente' : 'Marcar como completada'}
                                                         >
                                                             {done && <CheckCircle size={14} className="text-white" />}
                                                         </button>
@@ -2028,18 +2086,27 @@ const Dashboard = () => {
                                                             {task.name}
                                                         </p>
                                                     </div>
-                                                    <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                                                        {done ? (
-                                                            <span className="text-[10px] font-bold px-2 py-0.5 bg-amber-200/80 text-amber-900 rounded-full uppercase">Hecho</span>
-                                                        ) : (
-                                                            <span className="text-[10px] font-bold px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full uppercase">Nota</span>
-                                                        )}
+                                                    <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                                                        <button
+                                                            onClick={() => openNoteModal(task, false)}
+                                                            className="p-1.5 rounded-lg text-amber-700/70 hover:text-amber-900 hover:bg-amber-100/70 transition-colors"
+                                                            title="Ver modo vista"
+                                                        >
+                                                            <Eye size={15} />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => openNoteModal(task, true)}
+                                                            className="p-1.5 rounded-lg text-amber-700/70 hover:text-amber-900 hover:bg-amber-100/70 transition-colors"
+                                                            title="Editar nota"
+                                                        >
+                                                            <Pencil size={15} />
+                                                        </button>
                                                         <button
                                                             onClick={() => handleDeleteTask(task._id)}
-                                                            className="p-1 rounded-lg text-amber-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                                                            className="p-1.5 rounded-lg text-amber-400 hover:text-red-500 hover:bg-red-50 transition-colors"
                                                             title="Eliminar nota"
                                                         >
-                                                            <Trash2 size={14} />
+                                                            <Trash2 size={15} />
                                                         </button>
                                                     </div>
                                                 </div>
@@ -3123,6 +3190,114 @@ const Dashboard = () => {
                         </button>
                     </div>
                 </div>
+            )}
+            {/* Note View & Edit Modal */}
+            {selectedNote && (
+                <Modal
+                    isOpen={!!selectedNote}
+                    onClose={closeNoteModal}
+                    title={isEditingNote ? "Editar Nota" : "Detalle de la Nota"}
+                    maxWidth="max-w-lg"
+                >
+                    <div className="space-y-5">
+                        {isEditingNote ? (
+                            <div>
+                                <label className="block text-xs font-bold text-amber-700 uppercase tracking-wider mb-2">
+                                    Contenido de la nota
+                                </label>
+                                <textarea
+                                    className="w-full px-4 py-3 border border-amber-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400/40 text-sm bg-amber-50/20 text-slate-800 font-medium min-h-[140px] resize-y"
+                                    value={noteEditText}
+                                    onChange={(e) => setNoteEditText(e.target.value)}
+                                    placeholder="Escribe el contenido de la nota..."
+                                    autoFocus
+                                />
+                            </div>
+                        ) : (
+                            <div>
+                                <div className="flex items-center justify-between mb-3">
+                                    <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
+                                        selectedNote.completedAt
+                                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                                            : 'bg-amber-100 text-amber-900 border border-amber-200'
+                                    }`}>
+                                        <StickyNote size={13} />
+                                        {selectedNote.completedAt ? 'Completada' : 'Sin Vencimiento (Pendiente)'}
+                                    </span>
+                                </div>
+
+                                <div className="p-4 bg-amber-50/60 border border-amber-200/80 rounded-xl text-slate-800 text-base leading-relaxed whitespace-pre-wrap font-medium">
+                                    {selectedNote.name}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Modal Actions */}
+                        <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                            {isEditingNote ? (
+                                <div className="flex gap-2 ml-auto">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsEditingNote(false)}
+                                        className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleSaveNoteEdit}
+                                        disabled={tasksLoading}
+                                        className="flex items-center gap-1.5 px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-sm font-bold transition-colors shadow-sm disabled:opacity-50"
+                                    >
+                                        <Save size={16} />
+                                        Guardar Cambios
+                                    </button>
+                                </div>
+                            ) : (
+                                <>
+                                    <button
+                                        type="button"
+                                        onClick={async () => {
+                                            await handleToggleTask(selectedNote._id);
+                                            setSelectedNote(prev => prev ? { ...prev, completedAt: prev.completedAt ? null : new Date().toISOString() } : null);
+                                        }}
+                                        className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-colors ${
+                                            selectedNote.completedAt
+                                                ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                                                : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm'
+                                        }`}
+                                    >
+                                        <CheckCircle size={14} />
+                                        {selectedNote.completedAt ? 'Marcar Pendiente' : 'Marcar Completada'}
+                                    </button>
+
+                                    <div className="flex gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsEditingNote(true)}
+                                            className="flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition-colors shadow-sm"
+                                        >
+                                            <Pencil size={14} />
+                                            Editar
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={async () => {
+                                                const id = selectedNote._id;
+                                                closeNoteModal();
+                                                await handleDeleteTask(id);
+                                            }}
+                                            className="flex items-center gap-1.5 px-3.5 py-2 bg-red-50 border border-red-200 hover:bg-red-100 text-red-600 rounded-xl text-xs font-bold transition-colors"
+                                        >
+                                            <Trash2 size={14} />
+                                            Borrar
+                                        </button>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                </Modal>
             )}
 
         </div>
